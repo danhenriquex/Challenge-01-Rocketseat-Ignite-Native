@@ -13,7 +13,6 @@ import { Task } from "./TasksList";
 import { EditTask } from "../pages/Home";
 
 export interface TaskItem {
-  index: number;
   task: Task;
   toggleTaskDone: (id: number) => void;
   removeTask: (id: number) => void;
@@ -21,7 +20,6 @@ export interface TaskItem {
 }
 
 export function TaskItem({
-  index,
   toggleTaskDone,
   editTask,
   removeTask,
@@ -37,8 +35,8 @@ export function TaskItem({
   }
 
   function handleCancelEditing() {
-    setIsEditing(false);
     setNewTitle(task.title);
+    setIsEditing(false);
   }
 
   function handleSubmitEditing() {
@@ -60,15 +58,11 @@ export function TaskItem({
     <>
       <View>
         <TouchableOpacity
-          testID={`button-${index}`}
           activeOpacity={0.7}
           style={styles.taskButton}
           onPress={() => toggleTaskDone(task.id)}
         >
-          <View
-            testID={`marker-${index}`}
-            style={task.done ? styles.taskMarkerDone : styles.taskMarker}
-          >
+          <View style={task.done ? styles.taskMarkerDone : styles.taskMarker}>
             {task.done && <Icon name="check" size={12} color="#FFF" />}
           </View>
 
@@ -86,30 +80,28 @@ export function TaskItem({
       <View style={styles.container}>
         {isEditing ? (
           <TouchableOpacity
-            testID={`trash-${index}`}
             style={{ paddingHorizontal: 24 }}
             onPress={() => handleCancelEditing()}
           >
             <Icon name="delete" size={18} color="#b2b2b2" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            testID={`trash-${index}`}
-            style={{ paddingHorizontal: 24 }}
-            onPress={() => handleStartEditing()}
-          >
-            <Icon name="edit" size={18} color="#b2b2b2" />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              style={{ paddingHorizontal: 24 }}
+              onPress={() => handleStartEditing()}
+            >
+              <Icon name="edit" size={18} color="#b2b2b2" />
+            </TouchableOpacity>
+            <View style={styles.borderDivisor} />
+            <TouchableOpacity
+              style={{ paddingHorizontal: 24, opacity: isEditing ? 0.2 : 1 }}
+              onPress={() => removeTask(task.id)}
+            >
+              <Image source={trashIcon} />
+            </TouchableOpacity>
+          </>
         )}
-
-        <View style={styles.borderDivisor} />
-        <TouchableOpacity
-          testID={`trash-${index}`}
-          style={{ paddingHorizontal: 24, opacity: isEditing ? 0.2 : 1 }}
-          onPress={() => removeTask(task.id)}
-        >
-          <Image source={trashIcon} />
-        </TouchableOpacity>
       </View>
     </>
   );
